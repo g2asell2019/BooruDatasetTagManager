@@ -82,6 +82,7 @@ namespace BooruDatasetTagManager
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.gridViewDS = new System.Windows.Forms.DataGridView();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.gridViewTags)).BeginInit();
             this.toolStrip2.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -128,10 +129,8 @@ namespace BooruDatasetTagManager
             this.gridViewTags.Size = new System.Drawing.Size(364, 460);
             this.gridViewTags.TabIndex = 2;
             this.gridViewTags.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridViewTags_CellEndEdit);
-            this.gridViewTags.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.gridViewTags_CellMouseClick);
             this.gridViewTags.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewTags_CellMouseEnter);
             this.gridViewTags.CellMouseLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewTags_CellMouseLeave);
-            this.gridViewTags.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.gridViewTags_CellValidating);
             this.gridViewTags.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dataGridView1_EditingControlShowing);
             this.gridViewTags.DragDrop += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragDrop);
             this.gridViewTags.DragOver += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragOver);
@@ -330,7 +329,8 @@ namespace BooruDatasetTagManager
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openFolderToolStripMenuItem,
             this.saveAllChangesToolStripMenuItem,
-            this.loadLossFromFileToolStripMenuItem});
+            this.loadLossFromFileToolStripMenuItem,
+            this.settingsToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -338,21 +338,21 @@ namespace BooruDatasetTagManager
             // openFolderToolStripMenuItem
             // 
             this.openFolderToolStripMenuItem.Name = "openFolderToolStripMenuItem";
-            this.openFolderToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.openFolderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openFolderToolStripMenuItem.Text = "Load folder...";
             this.openFolderToolStripMenuItem.Click += new System.EventHandler(this.openFolderToolStripMenuItem_Click);
             // 
             // saveAllChangesToolStripMenuItem
             // 
             this.saveAllChangesToolStripMenuItem.Name = "saveAllChangesToolStripMenuItem";
-            this.saveAllChangesToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.saveAllChangesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveAllChangesToolStripMenuItem.Text = "Save all changes";
             this.saveAllChangesToolStripMenuItem.Click += new System.EventHandler(this.saveAllChangesToolStripMenuItem_Click);
             // 
             // loadLossFromFileToolStripMenuItem
             // 
             this.loadLossFromFileToolStripMenuItem.Name = "loadLossFromFileToolStripMenuItem";
-            this.loadLossFromFileToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.loadLossFromFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.loadLossFromFileToolStripMenuItem.Text = "Load loss from file";
             this.loadLossFromFileToolStripMenuItem.Click += new System.EventHandler(this.loadLossFromFileToolStripMenuItem_Click);
             // 
@@ -665,6 +665,13 @@ namespace BooruDatasetTagManager
             this.gridViewDS.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.gridViewDS_ColumnHeaderMouseClick);
             this.gridViewDS.SelectionChanged += new System.EventHandler(this.dataGridView3_SelectionChanged);
             // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.settingsToolStripMenuItem.Text = "Settings...";
+            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -756,6 +763,7 @@ namespace BooruDatasetTagManager
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripButton toolStripButton23;
+        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
     }
 }
 

@@ -5,7 +5,6 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -57,6 +56,7 @@ namespace BooruDatasetTagManager
         private void Form1_Load(object sender, EventArgs e)
         {
             Text += " " + Application.ProductVersion;
+            gridViewDS.RowTemplate.Height = Program.Settings.PreviewSize + 10;
         }
 
         private void SetChangedStatus(bool changed)
@@ -95,7 +95,7 @@ namespace BooruDatasetTagManager
             {
                 for (int i = 0; i < toTrans.Count; i++)
                 {
-                    //toTrans[i] = Program.tools.TranslateText(toTrans[i], transLang, true);
+                    toTrans[i] = Program.tools.TranslateText(toTrans[i], transLang, true);
                 }
             });
             for (int i = 0; i < gridViewTags.RowCount; i++)
@@ -281,7 +281,7 @@ namespace BooruDatasetTagManager
                 gridViewTags.HitTest(clientPoint.X, clientPoint.Y).RowIndex;
 
             // If the drag operation was a move then remove and insert the row.
-            if (e.Effect == DragDropEffects.Move && rowIndexFromMouseDown != -1)
+            if (e.Effect == DragDropEffects.Move)
             {
                 DataGridViewRow rowToMove = e.Data.GetData(
                     typeof(DataGridViewRow)) as DataGridViewRow;
@@ -298,55 +298,31 @@ namespace BooruDatasetTagManager
             AddNewRow();
         }
 
-        private void AddNewRow(bool fromKeyboard = false)
+        private void AddNewRow()
         {
-            try
+            if (gridViewDS.SelectedRows.Count > 1)
             {
-                if (gridViewDS.SelectedRows.Count > 1)
+                //MessageBox.Show("Adding tags does not support multiple selection. Choose one image.");
+                //return;
+                using (Form_addTag addTag = new Form_addTag())
                 {
-                    //MessageBox.Show("Adding tags does not support multiple selection. Choose one image.");
-                    //return;
-                    using (Form_addTag addTag = new Form_addTag())
+                    addTag.comboBox1.Enabled = false;
+                    if (addTag.ShowDialog() == DialogResult.OK)
                     {
-                        addTag.comboBox1.Enabled = false;
-                        if (addTag.ShowDialog() == DialogResult.OK)
-                        {
-                            AddTagMultiselectedMode(addTag.textBox1.Text);
-                        }
-                        addTag.Close();
+                        AddTagMultiselectedMode(addTag.textBox1.Text);
                     }
+                    addTag.Close();
                 }
+            }
+            else
+            {
+                if (gridViewTags.SelectedCells.Count == 0 || gridViewTags.RowCount == 0)
+                    gridViewTags.Rows.Add();
                 else
                 {
-                    if (gridViewTags.SelectedCells.Count == 0 || gridViewTags.RowCount == 0)
-                    {
-                        int addedRow = gridViewTags.Rows.Add();
-                        gridViewTags.CurrentCell = gridViewTags.Rows[addedRow].Cells[0];
-
-
-                    }
-                    else
-                    {
-                        int nextCellIndex = gridViewTags.SelectedCells[0].RowIndex + 1;
-                        gridViewTags.Rows.Insert(nextCellIndex);
-                        if (fromKeyboard)
-                        {
-                            nextCellIndex -= 1;
-                        }
-
-                        gridViewTags.CurrentCell = gridViewTags.Rows[nextCellIndex].Cells[0];
-
-
-                    }
-                    gridViewTags.BeginEdit(true);
+                    gridViewTags.Rows.Insert(gridViewTags.SelectedCells[0].RowIndex + 1);
                 }
             }
-            catch (Exception)
-            {
-
-                Console.WriteLine();
-            }
-            
         }
 
         private void toolStripButton3_Click(object sender, EventArgs e)
@@ -396,88 +372,54 @@ namespace BooruDatasetTagManager
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            LockEdit(true);
             ApplyTagsChanges();
-            LockEdit(false);
         }
 
         private void ApplyTagsChanges()
         {
-            try
+            if (Program.DataManager == null)
             {
-                
-                if (Program.DataManager == null)
-                {
-                    MessageBox.Show("Dataset not load.");
-                    
-                    return;
-                }
-                if ((string)gridViewTags.Tag != "0")
-                {
-                    List<string> nTags = new List<string>();
-                    Program.TagsList.Tags.Clear();
-                    for (int i = 0; i < gridViewTags.RowCount; i++)
-                    {
-                        if (gridViewTags[0, i].Value == null || gridViewTags[0, i].Value.ToString() == "")
-                        {
-                            continue;
-                        }
-                        nTags.Add((string)gridViewTags[0, i].Value);
-
-                        if (!Program.TagsList.Tags.Contains((string)gridViewTags[0, i].Value.ToString()
-                            ))
-                        {
-                            Program.TagsList.Tags.Add((string)gridViewTags[0, i].Value.ToString());
-
-                        }
-
-                    }
-                    //Program.DataManager.DataSet[(string)gridViewDS.SelectedRows[0].Cells["Name"].Value].Tags = nTags;
-                    Program.DataManager.DataSet[(string)gridViewTags.Tag].Tags = nTags;
-                }
-                else
-                {
-
-                    Dictionary<string, List<string>> nTagsList = new Dictionary<string, List<string>>();
-                    for (int i = 0; i < gridViewTags.RowCount; i++)
-                    {
-                        string tag = (string)gridViewTags["Image", i].Tag;
-                        string img = (string)gridViewTags["Image", i].Value;
-                        if (string.IsNullOrEmpty(img))
-                            throw new Exception("Image file name is empty!");
-                        if (string.IsNullOrEmpty(tag) && !string.IsNullOrEmpty((string)gridViewTags["ImageTags", i].Value))
-                            throw new NotImplementedException();
-                        if (string.IsNullOrWhiteSpace(tag))
-                            continue;
-                        if (nTagsList.ContainsKey(img))
-                            nTagsList[img].Add(tag);
-                        else
-                            nTagsList.Add(img, new List<string>() { tag });
-                    }
-                    foreach (var item in nTagsList)
-                    {
-                        Program.DataManager.DataSet[item.Key].Tags = item.Value;
-                        if (!Program.TagsList.Tags.Contains(item.Value.ToString()))
-                        {
-                            Program.TagsList.Tags.Add(item.Value.ToString());
-
-                        }
-
-                    }
-                }
-                Program.DataManager.UpdateData();
-                BindTagList();
-                SetChangedStatus(false);
-                lastGridViewTagsHash = GetgridViewTagsHash();
-                SetStatus("Saved (ApplyTagsChanges)");
+                MessageBox.Show("Dataset not load.");
+                return;
             }
-            catch (Exception)
+            if ((string)gridViewTags.Tag!="0")
             {
-
-
+                List<string> nTags = new List<string>();
+                for (int i = 0; i < gridViewTags.RowCount; i++)
+                {
+                    nTags.Add((string)gridViewTags[0, i].Value);
+                }
+                //Program.DataManager.DataSet[(string)gridViewDS.SelectedRows[0].Cells["Name"].Value].Tags = nTags;
+                Program.DataManager.DataSet[(string)gridViewTags.Tag].Tags = nTags;
             }
-            
-            
+            else
+            {
+                Dictionary<string, List<string>> nTagsList = new Dictionary<string, List<string>>();
+                for (int i = 0; i < gridViewTags.RowCount; i++)
+                {
+                    string tag = (string)gridViewTags["Image", i].Tag;
+                    string img = (string)gridViewTags["Image", i].Value;
+                    if (string.IsNullOrEmpty(img))
+                        throw new Exception("Image file name is empty!");
+                    if (string.IsNullOrEmpty(tag) && !string.IsNullOrEmpty((string)gridViewTags["ImageTags", i].Value))
+                        throw new NotImplementedException();
+                    if (string.IsNullOrWhiteSpace(tag))
+                        continue;
+                    if (nTagsList.ContainsKey(img))
+                        nTagsList[img].Add(tag);
+                    else
+                        nTagsList.Add(img, new List<string>() { tag });
+                }
+                foreach (var item in nTagsList)
+                {
+                    Program.DataManager.DataSet[item.Key].Tags = item.Value;
+                }
+            }
+            Program.DataManager.UpdateData();
+            BindTagList();
+            SetChangedStatus(false);
+            lastGridViewTagsHash = GetgridViewTagsHash();
+            SetStatus("Saved");
         }
 
         private void toolStripButton6_Click(object sender, EventArgs e)
@@ -651,12 +593,10 @@ namespace BooruDatasetTagManager
                 MessageBox.Show("Dataset not load.");
                 return;
             }
-            LockEdit(true);
             Program.DataManager.SaveAll();
             Program.DataManager.UpdateDatasetHash();
-            SetStatus("Saved! (FileWriteAllText)");
+            SetStatus("Saved!");
             MessageBox.Show("Saved!");
-            LockEdit(false);
         }
 
         private void showPreviewToolStripMenuItem_Click(object sender, EventArgs e)
@@ -843,10 +783,6 @@ namespace BooruDatasetTagManager
             {
                 toolStripButton2.PerformClick();
             }
-            else if (e.KeyCode == Keys.Enter)
-            {
-                AddNewRow(true);
-            }
         }
 
         private void loadLossFromFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -984,9 +920,7 @@ namespace BooruDatasetTagManager
                         if (MessageBox.Show("The list of tags has been changed. Save changes?", "Saving changes",
                             MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
-                            LockEdit(true);
                             ApplyTagsChanges();
-                            LockEdit(false);
                         }
                     }
                     LoadSelectedImageToGrid();
@@ -1064,40 +998,32 @@ namespace BooruDatasetTagManager
 
         private void gridViewTags_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            try
+            if (gridViewTags.Columns["ImageTags"].Index == e.ColumnIndex && e.RowIndex != -1)
             {
-                if (gridViewTags.Columns["ImageTags"].Index == e.ColumnIndex && e.RowIndex != -1)
+                string editedValue = (string)gridViewTags[e.ColumnIndex, e.RowIndex].Value;
+                if (gridViewDS.SelectedRows.Count == 1)
                 {
-                    string editedValue = (string)gridViewTags[e.ColumnIndex, e.RowIndex].Value;
-                    if (gridViewDS.SelectedRows.Count == 1)
+                    for (int i = 0; i < gridViewTags.RowCount; i++)
                     {
-                        for (int i = 0; i < gridViewTags.RowCount; i++)
+                        if (i != e.RowIndex && (string)gridViewTags[e.ColumnIndex, i].Value == editedValue)
                         {
-                            if (i != e.RowIndex && (string)gridViewTags[e.ColumnIndex, i].Value == editedValue)
-                            {
-                                gridViewTags.Rows.RemoveAt(e.RowIndex);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (string.IsNullOrEmpty((string)gridViewTags["Image", e.RowIndex].Value))
-                        {
-                            MessageBox.Show("Image name must be filled!");
                             gridViewTags.Rows.RemoveAt(e.RowIndex);
-                        }
-                        else
-                        {
-                            gridViewTags["Image", e.RowIndex].Tag = gridViewTags["ImageTags", e.RowIndex].Value;
                         }
                     }
                 }
+                else if (gridViewDS.SelectedRows.Count > 1)
+                {
+                    if (string.IsNullOrEmpty((string)gridViewTags["Image", e.RowIndex].Value))
+                    {
+                        MessageBox.Show("Image name must be filled!");
+                        gridViewTags.Rows.RemoveAt(e.RowIndex);
+                    }
+                    else
+                    {
+                        gridViewTags["Image", e.RowIndex].Tag = gridViewTags["ImageTags", e.RowIndex].Value;
+                    }
+                }
             }
-            catch (Exception)
-            {
-                Console.WriteLine();
-            }
-            
         }
 
         private void toolStripButton19_Click(object sender, EventArgs e)
@@ -1290,10 +1216,9 @@ namespace BooruDatasetTagManager
             }
             else
                 return;
-            searchedTag = searchedTag.Trim().ToLower();
             for (int i = 0; i < gridViewAllTags.RowCount; i++)
             {
-                if (((string)gridViewAllTags[0, i].Value).Trim().ToLower() == searchedTag)
+                if (((string)gridViewAllTags[0, i].Value) == searchedTag)
                 {
                     gridViewAllTags.ClearSelection();
                     gridViewAllTags.Rows[i].Selected = true;
@@ -1305,34 +1230,14 @@ namespace BooruDatasetTagManager
             }
         }
 
-        private void gridViewTags_ColumnAdded(object sender, DataGridViewColumnEventArgs e)
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            System.Text.StringBuilder messageBoxCS = new System.Text.StringBuilder();
-            messageBoxCS.AppendFormat("{0} = {1}", "Action", e.Column);
-            messageBoxCS.AppendLine();
-            messageBoxCS.AppendFormat("{0} = {1}", "Element", e.Column);
-            messageBoxCS.AppendLine();
-            MessageBox.Show(messageBoxCS.ToString(), "CollectionChanged Event");
-        }
-
-        private void gridViewTags_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
-        {
-            gridViewTags.Rows[e.RowIndex].ErrorText = "";
-            
-
-            // Don't try to validate the 'new row' until finished 
-            // editing since there
-            // is not any point in validating its initial value.
-            if (gridViewTags.Rows[e.RowIndex].IsNewRow) { return; }
-            
-        }
-
-        private void gridViewTags_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            if (e.ColumnIndex != -1 && e.RowIndex != -1)
+            Form_settings settings = new Form_settings();
+            if (settings.ShowDialog() == DialogResult.OK)
             {
-                gridViewTags.Rows[e.RowIndex].Cells[e.ColumnIndex].Selected = true;
+                statusLabel.Text = "Settings have been saved";
             }
+            settings.Close();
         }
     }
 }

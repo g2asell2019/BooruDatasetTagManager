@@ -842,6 +842,10 @@ namespace BooruDatasetTagManager
             {
                 toolStripButton2.PerformClick();
             }
+            else if (e.KeyCode == Keys.Enter)
+            {
+                AddNewRow(true);
+            }
         }
 
         private void loadLossFromFileToolStripMenuItem_Click(object sender, EventArgs e)

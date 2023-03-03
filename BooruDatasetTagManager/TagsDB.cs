@@ -18,6 +18,16 @@ namespace BooruDatasetTagManager
         }
 
 
+        public void UpdateData(List<TagValue> tags)
+        {
+            Tags.Clear();
+            foreach (var tag in tags)
+            {
+                Tags.Add(tag.Tag);
+            }
+            Console.WriteLine();
+        }
+
         public void LoadFromCSVFile(string fPath, bool append)
         {
             string[] lines = File.ReadAllLines(fPath);

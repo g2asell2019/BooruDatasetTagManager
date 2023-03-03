@@ -280,7 +280,7 @@ namespace BooruDatasetTagManager
                 gridViewTags.HitTest(clientPoint.X, clientPoint.Y).RowIndex;
 
             // If the drag operation was a move then remove and insert the row.
-            if (e.Effect == DragDropEffects.Move)
+            if (e.Effect == DragDropEffects.Move && rowIndexFromMouseDown != -1)
             {
                 DataGridViewRow rowToMove = e.Data.GetData(
                     typeof(DataGridViewRow)) as DataGridViewRow;

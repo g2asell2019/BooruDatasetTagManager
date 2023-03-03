@@ -653,7 +653,7 @@ namespace BooruDatasetTagManager
             LockEdit(true);
             Program.DataManager.SaveAll();
             Program.DataManager.UpdateDatasetHash();
-            SetStatus("Saved!");
+            SetStatus("Saved! (FileWriteAllText)");
             MessageBox.Show("Saved!");
             LockEdit(false);
         }

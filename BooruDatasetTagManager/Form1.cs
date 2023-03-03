@@ -1295,5 +1295,35 @@ namespace BooruDatasetTagManager
                 }
             }
         }
+
+        private void gridViewTags_ColumnAdded(object sender, DataGridViewColumnEventArgs e)
+        {
+            System.Text.StringBuilder messageBoxCS = new System.Text.StringBuilder();
+            messageBoxCS.AppendFormat("{0} = {1}", "Action", e.Column);
+            messageBoxCS.AppendLine();
+            messageBoxCS.AppendFormat("{0} = {1}", "Element", e.Column);
+            messageBoxCS.AppendLine();
+            MessageBox.Show(messageBoxCS.ToString(), "CollectionChanged Event");
+        }
+
+        private void gridViewTags_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            gridViewTags.Rows[e.RowIndex].ErrorText = "";
+            
+
+            // Don't try to validate the 'new row' until finished 
+            // editing since there
+            // is not any point in validating its initial value.
+            if (gridViewTags.Rows[e.RowIndex].IsNewRow) { return; }
+            
+        }
+
+        private void gridViewTags_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.ColumnIndex != -1 && e.RowIndex != -1)
+            {
+                gridViewTags.Rows[e.RowIndex].Cells[e.ColumnIndex].Selected = true;
+            }
+        }
     }
 }

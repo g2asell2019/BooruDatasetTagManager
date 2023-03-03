@@ -94,7 +94,7 @@ namespace BooruDatasetTagManager
             {
                 for (int i = 0; i < toTrans.Count; i++)
                 {
-                    toTrans[i] = Program.tools.TranslateText(toTrans[i], transLang, true);
+                    //toTrans[i] = Program.tools.TranslateText(toTrans[i], transLang, true);
                 }
             });
             for (int i = 0; i < gridViewTags.RowCount; i++)

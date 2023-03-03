@@ -1063,32 +1063,40 @@ namespace BooruDatasetTagManager
 
         private void gridViewTags_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            if (gridViewTags.Columns["ImageTags"].Index == e.ColumnIndex && e.RowIndex != -1)
+            try
             {
-                string editedValue = (string)gridViewTags[e.ColumnIndex, e.RowIndex].Value;
-                if (gridViewDS.SelectedRows.Count == 1)
+                if (gridViewTags.Columns["ImageTags"].Index == e.ColumnIndex && e.RowIndex != -1)
                 {
-                    for (int i = 0; i < gridViewTags.RowCount; i++)
+                    string editedValue = (string)gridViewTags[e.ColumnIndex, e.RowIndex].Value;
+                    if (gridViewDS.SelectedRows.Count == 1)
                     {
-                        if (i != e.RowIndex && (string)gridViewTags[e.ColumnIndex, i].Value == editedValue)
+                        for (int i = 0; i < gridViewTags.RowCount; i++)
                         {
-                            gridViewTags.Rows.RemoveAt(e.RowIndex);
+                            if (i != e.RowIndex && (string)gridViewTags[e.ColumnIndex, i].Value == editedValue)
+                            {
+                                gridViewTags.Rows.RemoveAt(e.RowIndex);
+                            }
                         }
-                    }
-                }
-                else
-                {
-                    if (string.IsNullOrEmpty((string)gridViewTags["Image", e.RowIndex].Value))
-                    {
-                        MessageBox.Show("Image name must be filled!");
-                        gridViewTags.Rows.RemoveAt(e.RowIndex);
                     }
                     else
                     {
-                        gridViewTags["Image", e.RowIndex].Tag = gridViewTags["ImageTags", e.RowIndex].Value;
+                        if (string.IsNullOrEmpty((string)gridViewTags["Image", e.RowIndex].Value))
+                        {
+                            MessageBox.Show("Image name must be filled!");
+                            gridViewTags.Rows.RemoveAt(e.RowIndex);
+                        }
+                        else
+                        {
+                            gridViewTags["Image", e.RowIndex].Tag = gridViewTags["ImageTags", e.RowIndex].Value;
+                        }
                     }
                 }
             }
+            catch (Exception)
+            {
+                Console.WriteLine();
+            }
+            
         }
 
         private void toolStripButton19_Click(object sender, EventArgs e)

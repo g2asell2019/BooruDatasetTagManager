@@ -402,49 +402,81 @@ namespace BooruDatasetTagManager
 
         private void ApplyTagsChanges()
         {
-            if (Program.DataManager == null)
+            try
             {
-                MessageBox.Show("Dataset not load.");
-                return;
+                
+                if (Program.DataManager == null)
+                {
+                    MessageBox.Show("Dataset not load.");
+                    
+                    return;
+                }
+                if ((string)gridViewTags.Tag != "0")
+                {
+                    List<string> nTags = new List<string>();
+                    Program.TagsList.Tags.Clear();
+                    for (int i = 0; i < gridViewTags.RowCount; i++)
+                    {
+                        if (gridViewTags[0, i].Value == null || gridViewTags[0, i].Value.ToString() == "")
+                        {
+                            continue;
+                        }
+                        nTags.Add((string)gridViewTags[0, i].Value);
+
+                        if (!Program.TagsList.Tags.Contains((string)gridViewTags[0, i].Value.ToString()
+                            ))
+                        {
+                            Program.TagsList.Tags.Add((string)gridViewTags[0, i].Value.ToString());
+
+                        }
+
+                    }
+                    //Program.DataManager.DataSet[(string)gridViewDS.SelectedRows[0].Cells["Name"].Value].Tags = nTags;
+                    Program.DataManager.DataSet[(string)gridViewTags.Tag].Tags = nTags;
+                }
+                else
+                {
+
+                    Dictionary<string, List<string>> nTagsList = new Dictionary<string, List<string>>();
+                    for (int i = 0; i < gridViewTags.RowCount; i++)
+                    {
+                        string tag = (string)gridViewTags["Image", i].Tag;
+                        string img = (string)gridViewTags["Image", i].Value;
+                        if (string.IsNullOrEmpty(img))
+                            throw new Exception("Image file name is empty!");
+                        if (string.IsNullOrEmpty(tag) && !string.IsNullOrEmpty((string)gridViewTags["ImageTags", i].Value))
+                            throw new NotImplementedException();
+                        if (string.IsNullOrWhiteSpace(tag))
+                            continue;
+                        if (nTagsList.ContainsKey(img))
+                            nTagsList[img].Add(tag);
+                        else
+                            nTagsList.Add(img, new List<string>() { tag });
+                    }
+                    foreach (var item in nTagsList)
+                    {
+                        Program.DataManager.DataSet[item.Key].Tags = item.Value;
+                        if (!Program.TagsList.Tags.Contains(item.Value.ToString()))
+                        {
+                            Program.TagsList.Tags.Add(item.Value.ToString());
+
+                        }
+
+                    }
+                }
+                Program.DataManager.UpdateData();
+                BindTagList();
+                SetChangedStatus(false);
+                lastGridViewTagsHash = GetgridViewTagsHash();
+                SetStatus("Saved (ApplyTagsChanges)");
             }
-            if ((string)gridViewTags.Tag!="0")
+            catch (Exception)
             {
-                List<string> nTags = new List<string>();
-                for (int i = 0; i < gridViewTags.RowCount; i++)
-                {
-                    nTags.Add((string)gridViewTags[0, i].Value);
-                }
-                //Program.DataManager.DataSet[(string)gridViewDS.SelectedRows[0].Cells["Name"].Value].Tags = nTags;
-                Program.DataManager.DataSet[(string)gridViewTags.Tag].Tags = nTags;
+
+
             }
-            else
-            {
-                Dictionary<string, List<string>> nTagsList = new Dictionary<string, List<string>>();
-                for (int i = 0; i < gridViewTags.RowCount; i++)
-                {
-                    string tag = (string)gridViewTags["Image", i].Tag;
-                    string img = (string)gridViewTags["Image", i].Value;
-                    if (string.IsNullOrEmpty(img))
-                        throw new Exception("Image file name is empty!");
-                    if (string.IsNullOrEmpty(tag) && !string.IsNullOrEmpty((string)gridViewTags["ImageTags", i].Value))
-                        throw new NotImplementedException();
-                    if (string.IsNullOrWhiteSpace(tag))
-                        continue;
-                    if (nTagsList.ContainsKey(img))
-                        nTagsList[img].Add(tag);
-                    else
-                        nTagsList.Add(img, new List<string>() { tag });
-                }
-                foreach (var item in nTagsList)
-                {
-                    Program.DataManager.DataSet[item.Key].Tags = item.Value;
-                }
-            }
-            Program.DataManager.UpdateData();
-            BindTagList();
-            SetChangedStatus(false);
-            lastGridViewTagsHash = GetgridViewTagsHash();
-            SetStatus("Saved");
+            
+            
         }
 
         private void toolStripButton6_Click(object sender, EventArgs e)

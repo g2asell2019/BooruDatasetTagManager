@@ -37,16 +37,24 @@ namespace BooruDatasetTagManager
         public bool SaveAll()
         {
             bool saved = false;
-            foreach (var item in DataSet)
+            try
             {
-                if (item.Value.IsModified)
+                foreach (var item in DataSet)
                 {
-                    item.Value.DeduplicateTags();
-                    File.WriteAllText(item.Value.TextFilePath, string.Join(", ", item.Value.Tags));
-                    saved = true;
+                    if (item.Value.IsModified)
+                    {
+                        item.Value.DeduplicateTags();
+                        File.WriteAllText(item.Value.TextFilePath, string.Join(", ", item.Value.Tags));
+                        saved = true;
+                    }
                 }
             }
+            catch (Exception)
+            {
+
+            }
             return saved;
+            
         }
 
         public void UpdateData()
@@ -57,6 +65,11 @@ namespace BooruDatasetTagManager
                 .OrderBy(x => x)
                 .Select(x => new TagValue(x))
                 .ToList();
+            if (!Program.TagsList.inited)
+            {
+                Program.TagsList.UpdateData(AllTags);
+                Program.TagsList.inited = true;
+            }
             CommonTags = DataSet
                 .Skip(1).Aggregate(
                     new HashSet<string>(DataSet.First().Value.Tags),
@@ -65,6 +78,13 @@ namespace BooruDatasetTagManager
                 .OrderBy(x => x)
                 .Select(x => new TagValue(x))
                 .ToList();
+            if (CommonTags.Count > 0)
+            {
+                foreach (var tag in CommonTags)
+                {
+                    Program.TagsList.Tags.Add(tag.Tag.ToString());
+                }
+            }
         }
 
         private IEnumerable<DataItem> GetEnumerator(bool useFilter)

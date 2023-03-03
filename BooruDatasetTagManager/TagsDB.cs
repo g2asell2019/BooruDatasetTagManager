@@ -12,9 +12,11 @@ namespace BooruDatasetTagManager
     {
         public AutoCompleteStringCollection Tags;
 
+        public bool inited;
         public TagsDB()
         {
             Tags = new AutoCompleteStringCollection();
+            inited = false;
         }
 
 

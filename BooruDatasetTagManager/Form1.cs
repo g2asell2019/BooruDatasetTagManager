@@ -983,7 +983,9 @@ namespace BooruDatasetTagManager
                         if (MessageBox.Show("The list of tags has been changed. Save changes?", "Saving changes",
                             MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
+                            LockEdit(true);
                             ApplyTagsChanges();
+                            LockEdit(false);
                         }
                     }
                     LoadSelectedImageToGrid();

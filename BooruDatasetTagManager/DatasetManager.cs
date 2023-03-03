@@ -16,6 +16,7 @@ namespace BooruDatasetTagManager
     public class DatasetManager
     {
         public ConcurrentDictionary<string, DataItem> DataSet;
+        public ImageList Images;
         public List<TagValue> AllTags;
         public List<TagValue> CommonTags;
 
@@ -282,15 +283,16 @@ namespace BooruDatasetTagManager
         public void LoadFromFolder(string folder)
         {
             List<string> imagesExt = new List<string>() { ".jpg", ".png", ".bmp", ".jpeg" };
-            string[] imgs = Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories);
+            string[] imgs = Directory.GetFiles(folder, "*.*", SearchOption.TopDirectoryOnly);
 
             imgs = imgs.Where(a => imagesExt.Contains(Path.GetExtension(a).ToLower())).OrderBy(a => a, new FileNamesComparer()).ToArray();
-            int imgSize = Program.Settings.PreviewSize;
+
             imgs.AsParallel().ForAll(x =>
             {
-                var dt = new DataItem(x, imgSize);
+                var dt = new DataItem(x);
                 DataSet.TryAdd(dt.Name, dt);
             });
+            Images = GetImageList(130, 130);
             UpdateDatasetHash();
             IsLossLoaded = false;
         }
@@ -304,6 +306,12 @@ namespace BooruDatasetTagManager
                 imgList.Images.Add(item.Key, item.Value.Img);
             }
             return imgList;
+        }
+
+        public void UpdateImageList(int w, int h)
+        {
+            Images.Images.Clear();
+            Images = GetImageList(w, h);
         }
 
         public bool IsDataSetChanged()
@@ -433,7 +441,7 @@ namespace BooruDatasetTagManager
                 LastLoss = -1;
             }
 
-            public DataItem(string imagePath, int imageSize)
+            public DataItem(string imagePath)
             {
                 Tags = new List<string>();
                 ImageFilePath = imagePath;
@@ -441,7 +449,7 @@ namespace BooruDatasetTagManager
                 ImageModifyTime = File.GetLastWriteTime(imagePath);
                 TextFilePath = Path.Combine(Path.GetDirectoryName(imagePath), Name + ".txt");
                 GetTagsFromFile();
-                Img = MakeThumb(imagePath, imageSize);
+                Img = MakeThumb(imagePath);
             }
 
             public void DeduplicateTags()
@@ -452,19 +460,19 @@ namespace BooruDatasetTagManager
                 }
             }
 
-            Image MakeThumb(string imagePath, int imgSize)
+            Image MakeThumb(string imagePath)
             {
                 using (var img = Image.FromFile(imagePath))
                 {
                     var aspect = img.Width / (float)img.Height;
 
-                    int newHeight = img.Height * imgSize / img.Width;
-                    int newWidth = imgSize;
+                    int newHeight = img.Height * 130 / img.Width;
+                    int newWidth = 130;
 
-                    if (newHeight > imgSize)
+                    if (newHeight > 130)
                     {
-                        newWidth = img.Width * imgSize / img.Height;
-                        newHeight = imgSize;
+                        newWidth = img.Width * 130 / img.Height;
+                        newHeight = 130;
                     }
 
                     return img.GetThumbnailImage(newWidth, newHeight, () => false, IntPtr.Zero);

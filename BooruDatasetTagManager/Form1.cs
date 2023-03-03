@@ -297,31 +297,55 @@ namespace BooruDatasetTagManager
             AddNewRow();
         }
 
-        private void AddNewRow()
+        private void AddNewRow(bool fromKeyboard = false)
         {
-            if (gridViewDS.SelectedRows.Count > 1)
+            try
             {
-                //MessageBox.Show("Adding tags does not support multiple selection. Choose one image.");
-                //return;
-                using (Form_addTag addTag = new Form_addTag())
+                if (gridViewDS.SelectedRows.Count > 1)
                 {
-                    addTag.comboBox1.Enabled = false;
-                    if (addTag.ShowDialog() == DialogResult.OK)
+                    //MessageBox.Show("Adding tags does not support multiple selection. Choose one image.");
+                    //return;
+                    using (Form_addTag addTag = new Form_addTag())
                     {
-                        AddTagMultiselectedMode(addTag.textBox1.Text);
+                        addTag.comboBox1.Enabled = false;
+                        if (addTag.ShowDialog() == DialogResult.OK)
+                        {
+                            AddTagMultiselectedMode(addTag.textBox1.Text);
+                        }
+                        addTag.Close();
                     }
-                    addTag.Close();
                 }
-            }
-            else
-            {
-                if (gridViewTags.SelectedCells.Count == 0 || gridViewTags.RowCount == 0)
-                    gridViewTags.Rows.Add();
                 else
                 {
-                    gridViewTags.Rows.Insert(gridViewTags.SelectedCells[0].RowIndex + 1);
+                    if (gridViewTags.SelectedCells.Count == 0 || gridViewTags.RowCount == 0)
+                    {
+                        int addedRow = gridViewTags.Rows.Add();
+                        gridViewTags.CurrentCell = gridViewTags.Rows[addedRow].Cells[0];
+
+
+                    }
+                    else
+                    {
+                        int nextCellIndex = gridViewTags.SelectedCells[0].RowIndex + 1;
+                        gridViewTags.Rows.Insert(nextCellIndex);
+                        if (fromKeyboard)
+                        {
+                            nextCellIndex -= 1;
+                        }
+
+                        gridViewTags.CurrentCell = gridViewTags.Rows[nextCellIndex].Cells[0];
+
+
+                    }
+                    gridViewTags.BeginEdit(true);
                 }
             }
+            catch (Exception)
+            {
+
+                Console.WriteLine();
+            }
+            
         }
 
         private void toolStripButton3_Click(object sender, EventArgs e)

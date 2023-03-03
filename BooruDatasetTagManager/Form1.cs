@@ -395,7 +395,9 @@ namespace BooruDatasetTagManager
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
+            LockEdit(true);
             ApplyTagsChanges();
+            LockEdit(false);
         }
 
         private void ApplyTagsChanges()
@@ -616,10 +618,12 @@ namespace BooruDatasetTagManager
                 MessageBox.Show("Dataset not load.");
                 return;
             }
+            LockEdit(true);
             Program.DataManager.SaveAll();
             Program.DataManager.UpdateDatasetHash();
             SetStatus("Saved!");
             MessageBox.Show("Saved!");
+            LockEdit(false);
         }
 
         private void showPreviewToolStripMenuItem_Click(object sender, EventArgs e)

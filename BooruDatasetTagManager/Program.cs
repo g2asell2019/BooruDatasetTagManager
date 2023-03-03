@@ -19,7 +19,7 @@ namespace BooruDatasetTagManager
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            tools = new TextTool(Application.StartupPath);
+            //tools = new TextTool(Application.StartupPath);
             if (!File.Exists("settings.json"))
             {
                 Settings = new AppSettings();
@@ -59,7 +59,7 @@ namespace BooruDatasetTagManager
 
         public static DatasetManager DataManager;
 
-        public static TextTool tools;
+        //public static TextTool tools;
 
         public static AppSettings Settings;
 

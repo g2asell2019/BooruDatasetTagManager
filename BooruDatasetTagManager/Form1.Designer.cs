@@ -29,8 +29,8 @@ namespace BooruDatasetTagManager
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.gridViewTags = new System.Windows.Forms.DataGridView();
             this.ImageTags = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
@@ -112,14 +112,14 @@ namespace BooruDatasetTagManager
             this.gridViewTags.ColumnHeadersVisible = false;
             this.gridViewTags.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ImageTags});
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.gridViewTags.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.gridViewTags.DefaultCellStyle = dataGridViewCellStyle3;
             this.gridViewTags.Location = new System.Drawing.Point(6, 19);
             this.gridViewTags.MultiSelect = false;
             this.gridViewTags.Name = "gridViewTags";
@@ -136,6 +136,7 @@ namespace BooruDatasetTagManager
             this.gridViewTags.DragDrop += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragDrop);
             this.gridViewTags.DragOver += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragOver);
             this.gridViewTags.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyDown);
+            this.gridViewTags.KeyUp += new System.Windows.Forms.KeyEventHandler(this.gridViewTags_KeyUp);
             this.gridViewTags.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dataGridView1_MouseDown);
             this.gridViewTags.MouseMove += new System.Windows.Forms.MouseEventHandler(this.dataGridView1_MouseMove);
             // 
@@ -182,6 +183,7 @@ namespace BooruDatasetTagManager
             this.toolStripButton2.Name = "toolStripButton2";
             this.toolStripButton2.Size = new System.Drawing.Size(23, 24);
             this.toolStripButton2.Text = "Add";
+            this.toolStripButton2.ToolTipText = "press Insert or Enter to insert new row";
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
             // toolStripButton3
@@ -192,6 +194,7 @@ namespace BooruDatasetTagManager
             this.toolStripButton3.Name = "toolStripButton3";
             this.toolStripButton3.Size = new System.Drawing.Size(23, 24);
             this.toolStripButton3.Text = "Delete";
+            this.toolStripButton3.ToolTipText = "Press Delete button";
             this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
             // 
             // toolStripButton1
@@ -202,6 +205,7 @@ namespace BooruDatasetTagManager
             this.toolStripButton1.Name = "toolStripButton1";
             this.toolStripButton1.Size = new System.Drawing.Size(23, 24);
             this.toolStripButton1.Text = "Apply";
+            this.toolStripButton1.ToolTipText = "Ctrl + S to Apply";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
             // toolStripButton11
@@ -338,21 +342,22 @@ namespace BooruDatasetTagManager
             // openFolderToolStripMenuItem
             // 
             this.openFolderToolStripMenuItem.Name = "openFolderToolStripMenuItem";
-            this.openFolderToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.openFolderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openFolderToolStripMenuItem.Text = "Load folder...";
             this.openFolderToolStripMenuItem.Click += new System.EventHandler(this.openFolderToolStripMenuItem_Click);
             // 
             // saveAllChangesToolStripMenuItem
             // 
             this.saveAllChangesToolStripMenuItem.Name = "saveAllChangesToolStripMenuItem";
-            this.saveAllChangesToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.saveAllChangesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveAllChangesToolStripMenuItem.Text = "Save all changes";
+            this.saveAllChangesToolStripMenuItem.ToolTipText = "Ctrl + Shift + S to save tags to file";
             this.saveAllChangesToolStripMenuItem.Click += new System.EventHandler(this.saveAllChangesToolStripMenuItem_Click);
             // 
             // loadLossFromFileToolStripMenuItem
             // 
             this.loadLossFromFileToolStripMenuItem.Name = "loadLossFromFileToolStripMenuItem";
-            this.loadLossFromFileToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.loadLossFromFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.loadLossFromFileToolStripMenuItem.Text = "Load loss from file";
             this.loadLossFromFileToolStripMenuItem.Click += new System.EventHandler(this.loadLossFromFileToolStripMenuItem_Click);
             // 
@@ -407,14 +412,14 @@ namespace BooruDatasetTagManager
             | System.Windows.Forms.AnchorStyles.Right)));
             this.gridViewAllTags.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.gridViewAllTags.ColumnHeadersVisible = false;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.gridViewAllTags.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.gridViewAllTags.DefaultCellStyle = dataGridViewCellStyle4;
             this.gridViewAllTags.Location = new System.Drawing.Point(165, 25);
             this.gridViewAllTags.Name = "gridViewAllTags";
             this.gridViewAllTags.ReadOnly = true;

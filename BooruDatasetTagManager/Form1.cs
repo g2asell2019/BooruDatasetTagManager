@@ -655,7 +655,7 @@ namespace BooruDatasetTagManager
             Program.DataManager.SaveAll();
             Program.DataManager.UpdateDatasetHash();
             SetStatus("Saved! (FileWriteAllText)");
-            MessageBox.Show("Saved!");
+            //MessageBox.Show("Saved!");
             LockEdit(false);
         }
 

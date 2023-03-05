@@ -967,32 +967,45 @@ namespace BooruDatasetTagManager
 
         private void dataGridView3_SelectionChanged(object sender, EventArgs e)
         {
-            if (isLoading)
+            try
             {
-                LoadSelectedImageToGrid();
-            }
-            else
-            {
-                if (lastGridViewTagsHash == -1)
+                Control.CheckForIllegalCrossThreadCalls = true;
+                LockEdit(true);
+                if (isLoading)
                 {
                     LoadSelectedImageToGrid();
                 }
                 else
                 {
-                    if (lastGridViewTagsHash != GetgridViewTagsHash())
+                    if (lastGridViewTagsHash == -1)
                     {
-                        if (MessageBox.Show("The list of tags has been changed. Save changes?", "Saving changes",
-                            MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                        {
-                            LockEdit(true);
-                            ApplyTagsChanges();
-                            LockEdit(false);
-                        }
+                        LoadSelectedImageToGrid();
                     }
-                    LoadSelectedImageToGrid();
+                    else
+                    {
+                        if (lastGridViewTagsHash != GetgridViewTagsHash())
+                        {
+                            //if (MessageBox.Show("The list of tags has been changed. Save changes?", "Saving changes",
+                            //    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                            //{
+
+                                ApplyTagsChanges();
+
+                            //}
+                        }
+                        LoadSelectedImageToGrid();
+                    }
                 }
+                lastGridViewTagsHash = GetgridViewTagsHash();
+                
             }
-            lastGridViewTagsHash = GetgridViewTagsHash();
+            catch (Exception error)
+            {
+                
+                MessageBox.Show(error.Message);
+            }
+            LockEdit(false);
+
         }
 
 

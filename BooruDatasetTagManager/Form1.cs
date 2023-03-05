@@ -415,7 +415,7 @@ namespace BooruDatasetTagManager
                 if ((string)gridViewTags.Tag != "0")
                 {
                     List<string> nTags = new List<string>();
-                    Program.TagsList.Tags.Clear();
+                    //Program.TagsList.Tags.Clear();
                     for (int i = 0; i < gridViewTags.RowCount; i++)
                     {
                         if (gridViewTags[0, i].Value == null || gridViewTags[0, i].Value.ToString() == "")

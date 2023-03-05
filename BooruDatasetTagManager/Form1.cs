@@ -847,6 +847,14 @@ namespace BooruDatasetTagManager
             {
                 AddNewRow(true);
             }
+            else if (e.Control && e.Shift && e.KeyCode == Keys.S)
+            {
+                LockEdit(true);
+                Program.DataManager.SaveAll();
+                Program.DataManager.UpdateDatasetHash();
+                SetStatus("Saved! (FileWriteAllText)");
+                LockEdit(false);
+            }
         }
 
         private void loadLossFromFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1347,5 +1355,15 @@ namespace BooruDatasetTagManager
                 gridViewTags.Rows[e.RowIndex].Cells[e.ColumnIndex].Selected = true;
             }
         }
+
+        private void gridViewTags_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Control && !e.Shift && e.KeyCode == Keys.S)
+            {
+                ApplyTagsChanges();
+            }
+            
+        }
+
     }
 }
